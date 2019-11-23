@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 const productSchema = new Schema({
-    _id: mongoose.Types.ObjectId,
+    _id: mongoose.Schema.Types.ObjectId,
     name: String,
     price: Number
 },{timestamps:true});
