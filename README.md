@@ -13,3 +13,7 @@ npm i --save express
  # install body-parser for parse the request 
 
   npm i --save body-parser
+
+  # Install Mongodb library 
+
+  npm i --save mongoose
