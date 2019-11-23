@@ -9,3 +9,7 @@ npm i --save express
 # Install Morgan to Log the api request
 
  npm i --save morgan
+
+ # install body-parser for parse the request 
+
+  npm i --save body-parser

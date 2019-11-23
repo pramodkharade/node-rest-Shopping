@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
 router.post('/',(req,res,next)=>{
+    const orders = {
+        productId: req.body.productId,
+        qunatity: req.body.qunatity
+    };
     res.status(201).json({
-        message:'Order was created'
+        message:'Order was created',
+        ordercreated: orders
     });
 });
 router.get('/',(req,res,next)=>{
