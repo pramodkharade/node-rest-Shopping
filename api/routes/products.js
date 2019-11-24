@@ -4,9 +4,24 @@ const router = express.Router();
 const Product = require('../models/product');
 
 router.get('/',(req,res,next)=>{
-    res.status(200).json({
-        message:'This is GET Request Router'
-    });
+    Product.find().exec()
+                  .then((allproduct)=>{
+                      if(allproduct.length > 0){
+                        res.status(200).json({
+                            message:"All products are:",
+                            products: allproduct
+                        });
+                      }else{
+                        res.status(200).json({
+                            message:"No product found:",
+                            products: allproduct
+                        });
+                      }
+                    
+                  })
+                  .catch((error)=>{
+                      res.status(500).json({error: error});
+                  });
 });
 
 router.post('/',(req,res,next)=>{
@@ -37,9 +52,16 @@ router.get('/:productId',(req,res,next)=>{
     Product.findById(id)
             .exec()
             .then((product)=>{
-                res.status(200).json({
-                    product
-                });
+                console.log('A product is::',product);
+                if(product){
+                    res.status(200).json({
+                        product
+                    });
+                }else{
+                    res.status(200).json({
+                        message:'No valid entry found with provided ID'
+                    });
+                }
             })
             .catch((error)=>{
                 res.status(500).json({
@@ -49,11 +71,44 @@ router.get('/:productId',(req,res,next)=>{
 });
 router.patch('/:productId',(req,res,next)=>{
     const id = req.params.productId;
-    res.status(200).json({message:'Update product router',id:id});
+    updateOps = {};
+    for(const ops of req.body){
+
+        updateOps[ops.propName] = ops.propValue;
+    }
+    console.log('Result Update::',updateOps);
+   Product.updateOne({_id:id},{$set:updateOps}).exec()
+          .then((result)=>{
+              if(result){
+                res.status(200).json({
+                    message:' Product has updated with provided ID',
+                    product: result
+                });
+              }
+              else{
+                res.status(200).json({
+                    message:' Product has updated with provided ID',
+                    product: []
+                });
+              }
+          })
+          .catch((err)=>{
+            res.status(500).json({
+                err: err,
+            });
+          });
+    
 });
 
 router.delete('/:productId',(req,res,next)=>{
     const id = req.params.productId;
+    Product.deleteOne({_id:id})
+           .exec()
+           .then((result)=>{
+               res.status(200).json({message:'product is deleted:'+id});
+           }).catch((error)=>{
+               res.status(500).json({error:error});
+           });
     res.status(200).json({message:'Delete product router',id:id});
 });
 
