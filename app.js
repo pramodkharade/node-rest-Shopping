@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 
 const MONGOURI ='mongodb://127.0.0.1:27017/nodeRestShopping';
-
+mongoose.Promise = global.Promise;
 const productsRoutes = require('./api/routes/products');
 const ordersRouter = require('./api/routes/orders');
 app.use(bodyParser.urlencoded({ extended:false}));
@@ -41,12 +41,14 @@ app.use((errors,req,res,next)=>{
             message: errors.message
         });
 });
-mongoose.connect(MONGOURI,{useNewUrlParser:true})
+mongoose.connect(MONGOURI,{useNewUrlParser:true,useUnifiedTopology:true})
         .then((result)=>{
             console.log('Mongodb DB server connected');
         })
         .catch((error)=>{
             console.log('Encounter the error while connecting the Database:', error);
         });
+
+
 /***Error Handling if route does not match END**/
 module.exports = app;
