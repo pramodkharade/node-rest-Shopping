@@ -34,7 +34,27 @@ npm i --save express
 	    "propValue":350
      }
    ]
-
-  Name: Update Product
+******************************************
+  Name: Get Single Product
   Method: GET
   http://127.0.0.1:3000/products/productID
+  
+  ***************************************
+  Name: GET All products
+  Method: GET
+  http://127.0.0.1:3000/products
+
+****************************************
+  Name: Add Product
+  Method: POST
+  http://127.0.0.1:3000/products
+    Body:
+    {
+        "name":"Soap",
+        "price": 50
+    }
+***************************************
+Name: Delete Single Product
+http://127.0.0.1:3000/products/productID
+Method: DELETE
+***************************************
