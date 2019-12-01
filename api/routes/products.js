@@ -4,13 +4,26 @@ const router = express.Router();
 const Product = require('../models/product');
 
 router.get('/',(req,res,next)=>{
-    Product.find().exec()
+    Product.find().select('name price _id')
+                  .exec()
                   .then((allproduct)=>{
+                      const response = {
+                          count: allproduct.length,
+                          products: allproduct.map(doc=>{
+                              return {
+                                  name: doc.name,
+                                  price: doc.price,
+                                  _id : doc._id,
+                                  message:' All product List',
+                                  request:{
+                                      type:'GET',
+                                      url: 'http://localhost:3000/products/'+doc._id
+                                  }
+                              }
+                          })
+                      };
                       if(allproduct.length > 0){
-                        res.status(200).json({
-                            message:"All products are:",
-                            products: allproduct
-                        });
+                        res.status(200).json(response);
                       }else{
                         res.status(200).json({
                             message:"No product found:",
