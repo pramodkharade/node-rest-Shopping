@@ -58,7 +58,7 @@ router.get('/:productId',(req,res,next)=>{
                         product
                     });
                 }else{
-                    res.status(200).json({
+                    res.status(404).json({
                         message:'No valid entry found with provided ID'
                     });
                 }
