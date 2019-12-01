@@ -9,6 +9,7 @@ router.get('/',(req,res,next)=>{
                   .then((allproduct)=>{
                       const response = {
                           count: allproduct.length,
+                          statusCode: 200,
                           products: allproduct.map(doc=>{
                               return {
                                   name: doc.name,
@@ -52,6 +53,7 @@ router.post('/',(req,res,next)=>{
                console.log('Product is created::', product);
                res.status(201).json({
                 message:'Created product successfully',
+                statusCode: 201,
                 createdProduct: {
                     name: product.name,
                     price: product.price,
@@ -71,12 +73,19 @@ router.post('/',(req,res,next)=>{
 router.get('/:productId',(req,res,next)=>{
     const id = req.params.productId;
     Product.findById(id)
+            .select('name price _id')
             .exec()
-            .then((product)=>{
-                console.log('A product is::',product);
-                if(product){
+            .then((doc)=>{
+                console.log('A product is::',doc);
+                if(doc){
                     res.status(200).json({
-                        product
+                        product: doc,
+                        statusCode: 200,
+                        request:{
+                            type:'GET',
+                            description:' All products',
+                            url:'http://localhost:3000/products'
+                        }
                     });
                 }else{
                     res.status(404).json({
@@ -94,7 +103,6 @@ router.patch('/:productId',(req,res,next)=>{
     const id = req.params.productId;
     updateOps = {};
     for(const ops of req.body){
-
         updateOps[ops.propName] = ops.propValue;
     }
     console.log('Result Update::',updateOps);
@@ -102,8 +110,12 @@ router.patch('/:productId',(req,res,next)=>{
           .then((result)=>{
               if(result){
                 res.status(200).json({
+                    statusCode: 200,
                     message:' Product has updated with provided ID',
-                    product: result
+                    request: {
+                        type:'GET',
+                        url:'http://localhost:3000/products/'+id
+                    }
                 });
               }
               else{
@@ -118,7 +130,6 @@ router.patch('/:productId',(req,res,next)=>{
                 err: err,
             });
           });
-    
 });
 
 router.delete('/:productId',(req,res,next)=>{
@@ -126,7 +137,17 @@ router.delete('/:productId',(req,res,next)=>{
     Product.deleteOne({_id:id})
            .exec()
            .then((result)=>{
-               res.status(200).json({message:'product is deleted:'+id});
+               res.status(200).json({
+                   message:'product is deleted:'+id,
+                   request:{
+                       type:'POST',
+                       url:'http://localhost:3000/products',
+                       body:{
+                           name:'String',
+                           price:'Number'
+                       }
+                   }
+                });
            }).catch((error)=>{
                res.status(500).json({error:error});
            });
