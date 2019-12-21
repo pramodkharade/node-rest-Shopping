@@ -4,7 +4,9 @@ const Schema = moongose.Schema;
 const orderSchema = Schema({
     _id: moongose.Schema.Types.ObjectId,
     product: {
-        type: moongose.Schema.Types.ObjectId, ref: 'Product'
+        type: moongose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
     },
     quantity: { type: Number, default:1}
 });
